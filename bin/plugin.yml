@@ -1,0 +1,24 @@
+name: ClicClac
+main: onishinji.ClicClac
+version: 1
+
+commands:
+    cc-start:
+        description: start 
+        usage: /cc-start
+    cc-end:
+        description: end 
+        usage: /cc-end
+    cc-link:
+        description: link 
+        usage: /cc-link
+    cc-list:
+        description: list 
+        usage: /cc-list
+    cc-undo:
+        description: list 
+        usage: /cc-undo
+    cc-remove:
+        description: remove 
+        usage: /cc-remove
+                

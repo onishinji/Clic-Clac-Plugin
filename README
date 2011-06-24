@@ -1,0 +1,20 @@
+# Permissions:
+
+cc.create
+cc.remove
+cc.list
+cc.link
+
+# Commands
+
+
+/cc-start NAME
+
+/cc-end
+
+/cc-link NAME
+
+/cc-remove NAME
+
+/cc-list
+
