@@ -3,18 +3,19 @@ package onishinji.commands;
 import onishinji.ClicClac;
 import onishinji.StructureCC;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class EndCCCommand implements CommandExecutor {
+public class NextCCCommand implements CommandExecutor {
 
-    
     private ClicClac plugin;
 
-    public EndCCCommand(ClicClac cacheCache) { 
-        plugin = cacheCache;
+    public NextCCCommand(ClicClac clicClac) {
+        // TODO Auto-generated constructor stub
+        plugin = clicClac;
     }
 
     @Override
@@ -27,7 +28,7 @@ public class EndCCCommand implements CommandExecutor {
             Player player = (Player) sender;
             
             
-            if (!plugin.hasGuard((Player) sender, "cc.create")) {
+            if (!plugin.hasGuard((Player) sender, "cc.next")) {
                 return true;
             }
 
@@ -35,11 +36,9 @@ public class EndCCCommand implements CommandExecutor {
             if(plugin.playerHasBeginStructure(player))
             {
                 StructureCC currentStructure = plugin.playerCreateCommand.get(player);
-                currentStructure.finishStructure(player);
-                plugin.saveStructure(currentStructure);
-                player.sendMessage("Zone Clic Clac '" + currentStructure.name + "' crée (dans le groupe '" + currentStructure.groupName+"'), tappe '/cc-link "+ currentStructure.name + " " + currentStructure.groupName+ "' puis clique sur un interrupteur");
-
-                plugin.playerCreateCommand.remove(player);
+                currentStructure.addStep(player);
+                player.sendMessage(ChatColor.YELLOW+" l'étape vient d'être sauvegardé, construit la nouvelle maintenant");
+ 
                 return true;
                 
             }

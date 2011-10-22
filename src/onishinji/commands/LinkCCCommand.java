@@ -32,15 +32,16 @@ public class LinkCCCommand implements CommandExecutor {
             
             String[] split = args;
 
-            if (split.length < 1 || split.length > 1) {
+            if (split.length < 1) {
                 player.sendMessage("Euh, je n'ai pas bien saisie le nom de la zone Clic Clac ...");
                 return true;
             } else {
                 String eventName = split[0];
-
-                if (plugin.structureExist(eventName)) {
+                String groupName =  plugin.getGroupNameFromArgs(args);
+                
+                if (plugin.structureExist(eventName,groupName)) {
                     player.sendMessage("Clique sur le bloc qui te servira d'interrupteur.");
-                    plugin.activeLink(eventName, player);
+                    plugin.activeLink(eventName,groupName, player, true);
                     
                     return true;
 

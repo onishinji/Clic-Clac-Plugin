@@ -1,5 +1,7 @@
 package onishinji.commands;
 
+import java.util.ArrayList;
+
 import onishinji.ClicClac;
 
 import org.bukkit.command.Command;
@@ -32,13 +34,14 @@ public class CreateCCCommand implements CommandExecutor {
             Player player = (Player) sender;
             String[] split = args;
 
-            if (split.length < 1 || split.length > 1) {
+            if (split.length < 1) {
                 player.sendMessage("Euh, je n'ai pas bien saisie le nom du Clic Clac ...");
                 return true;
             } else {
                 String eventName = split[0];
-
-                if (!plugin.structureExist(eventName)) {
+                String groupName =  plugin.getGroupNameFromArgs(args);
+               
+                if (!plugin.structureExist(eventName, groupName)) {
                     if (!plugin.playerHasBeginStructure(player)) {
                         player.sendMessage("clique sur le premier point de la zone Clic Clac, pour annuler retappe la même commande ou /cc-undo");
                     } else {
@@ -48,13 +51,15 @@ public class CreateCCCommand implements CommandExecutor {
                         player.sendMessage("clique sur le premier point de la zone de cache cache");
                     }
 
-                    plugin.startStructure(player, eventName);
+                    plugin.startStructure(player, eventName, groupName);
                 } else {
-                    player.sendMessage("Désolé, une zone Clic Clac cache porte déjà ce nom, recommence");
+                    player.sendMessage("Désolé, une zone Clic Clac cache porte déjà ce nom dans le groupe '" + groupName+"', recommence");
                 }
             }
 
         }
-        return false;
+        return true;
     }
+    
+   
 }

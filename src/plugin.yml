@@ -1,17 +1,36 @@
 name: ClicClac
 main: onishinji.ClicClac
-version: 1
+version: 1.1
+author: Onishinji
 
 commands:
     cc-start:
         description: start 
         usage: /cc-start
+    cc-run:
+        description: run 
+        usage: /cc-run        
+    cc-next:
+        description: start next step
+        usage: /cc-next
+    cc-move:
+        description: start 
+        usage: /cc-move
+    cc-tp:
+        description: tp to zone 
+        usage: /cc-tp  
+    cc-info:
+        description: get info from zone
+        usage: /cc-info              
     cc-end:
         description: end 
         usage: /cc-end
     cc-link:
         description: link 
         usage: /cc-link
+    cc-link-reverse:
+        description: link 
+        usage: /cc-link-reverse
     cc-list:
         description: list 
         usage: /cc-list
@@ -21,4 +40,15 @@ commands:
     cc-remove:
         description: remove 
         usage: /cc-remove
-                
+    cc-start-edit:
+        description: edit 
+        usage: /cc-start-edit
+    cc-end-edit:
+        description: edit 
+        usage: /cc-end-edit     
+    cc-identify:
+        description: identify 
+        usage: /cc-identify   
+    cc-break:
+        description: allow cc to be break 
+        usage: /cc-break  

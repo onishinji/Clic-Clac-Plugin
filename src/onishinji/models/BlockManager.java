@@ -20,7 +20,7 @@ public class BlockManager  implements Serializable{
 	private byte data;
 	private Material type;
 
-	private MyLocation location;
+	public MyLocation location;
 	private float direction;	
 	
 	public Material getType() {
@@ -34,6 +34,10 @@ public class BlockManager  implements Serializable{
 	public Location getLocation(World world) {
 		return new Location(world, location.getX(), location.getY(), location.getZ()); 
 	}
+
+    public MyLocation geMyLocation() {
+        return location;
+    }
 
 	public void setLocation(MyLocation location) {
 		this.location = location;
@@ -99,6 +103,5 @@ public class BlockManager  implements Serializable{
 
     public void setInvetory(Inventory inventory) { 
         
-    }
-
+    } 
 }

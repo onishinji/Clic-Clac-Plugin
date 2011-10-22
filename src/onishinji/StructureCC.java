@@ -2,8 +2,11 @@ package onishinji;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import onishinji.models.BlockManager;
+import onishinji.models.ButtonCC;
 import onishinji.models.MyLocation;
 
 import org.bukkit.Location;
@@ -12,7 +15,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 public class StructureCC implements Serializable {
 
@@ -22,23 +24,42 @@ public class StructureCC implements Serializable {
     private static final long serialVersionUID = 4024893610732056737L;
 
     public String name;
+    public String groupName = "default";
 
     public ArrayList<MyLocation> bornes;
-    public ArrayList<MyLocation> boutons;
+    public ArrayList<ButtonCC> boutons;
     public ArrayList<BlockManager> blocsInitial;
     public ArrayList<BlockManager> blocsFinal;
 
+    public ArrayList<ArrayList<BlockManager>> steps;
+
+    public Boolean isEditable = false;
+    public Boolean isBreakable = false;
+
     public int currentState = 0;
+
+    public String worldName;
+    public String playerName;
+
+    public boolean sens;
+
+    public Date lastUsed;
+    public boolean isDateLimited = false;
+    public long timeForDateLimited = 0;
+    
+    public boolean isAnimated = false;
 
     public StructureCC() {
         bornes = new ArrayList<MyLocation>();
-        boutons = new ArrayList<MyLocation>();
+        boutons = new ArrayList<ButtonCC>();
         blocsInitial = new ArrayList<BlockManager>();
         blocsFinal = new ArrayList<BlockManager>();
 
+        steps = new ArrayList<ArrayList<BlockManager>>();
+
     }
 
-    public StructureCC(String name, ArrayList<MyLocation> boutons) {
+    public StructureCC(String name, ArrayList<ButtonCC> boutons) {
         super();
         this.name = name;
         this.boutons = boutons;
@@ -51,6 +72,7 @@ public class StructureCC implements Serializable {
 
     public void createStartStateAndRemoveInnerBloc(Player player) {
         blocsInitial = this.getBlocInnerBloc(player);
+        this.addStep(player);
         this.remove(blocsInitial, player.getWorld());
     }
 
@@ -58,8 +80,8 @@ public class StructureCC implements Serializable {
 
         World world = player.getWorld();
 
-        Block first = player.getWorld().getBlockAt(bornes.get(0).getWordLocation());
-        Block second = player.getWorld().getBlockAt(bornes.get(1).getWordLocation());
+        Block first = player.getWorld().getBlockAt(bornes.get(0).getX(), bornes.get(0).getY(), bornes.get(0).getZ());
+        Block second = player.getWorld().getBlockAt(bornes.get(1).getX(), bornes.get(1).getY(), bornes.get(1).getZ());
         Block tmp;
         if (!(first.getLocation().getBlockX() > second.getLocation().getBlockX() && first.getLocation().getBlockZ() > second.getLocation().getBlockZ())) {
             tmp = first;
@@ -145,20 +167,54 @@ public class StructureCC implements Serializable {
 
     public void finishStructure(Player player) {
         blocsFinal = this.getBlocInnerBloc(player);
-
+        this.addStep(player);
     }
 
     public void switchBlocs(World world) {
 
-        if (currentState == 0) {
-            this.remove(blocsInitial, world);
-            this.print(blocsFinal, world);
-        } else {
+        if (isEditable == false) {
+            if (!this.isMultiCC()) {
+                if (currentState == 0) {
+                    this.remove(blocsInitial, world);
+                    this.print(blocsFinal, world);
+                } else {
 
-            this.remove(blocsFinal, world);
-            this.print(blocsInitial, world);
+                    this.remove(blocsFinal, world);
+                    this.print(blocsInitial, world);
+                }
+            } else {
+                if(currentState - 1 >=0)
+                this.remove(steps.get(currentState - 1), world);
 
+                if(currentState + 1 < steps.size())
+                this.remove(steps.get(currentState + 1), world);
+                
+                this.print(steps.get(currentState), world);
+            }
         }
+    }
+    
+    public void reinitMultiCC(World world)
+    {
+        if(this.isMultiCC())
+        {
+            this.remove(steps.get(currentState), world);
+            this.print(steps.get(0), world);
+            this.currentState = 0;
+        }
+    }
+
+    public void finishMultiCC(World world) {
+        if(this.isMultiCC())
+        {
+            this.remove(steps.get(currentState), world);
+            this.print(steps.get(this.steps.size() - 1), world);
+            this.currentState = this.steps.size() - 1;
+        }
+    }
+
+    public boolean isMultiCC() {
+        return steps.size() > 2;
     }
 
     static ArrayList<Material> getMaterialsForSecondPass() {
@@ -269,5 +325,95 @@ public class StructureCC implements Serializable {
         this.print(blocsInitial, world);
 
     }
+
+    public void updateBlock(Player player) {
+
+        if(!this.isMultiCC())
+        {
+            if (currentState == 0) {
+                blocsFinal = this.getBlocInnerBloc(player);
+            } else {
+                blocsInitial = this.getBlocInnerBloc(player);
+            }
+        }
+        else
+        {
+            steps.set(this.currentState, this.getBlocInnerBloc(player));
+        }
+
+    }
+
+    public void addStep(Player player) {
+        steps.add(this.getBlocInnerBloc(player));
+    }
+
+    public void computeNewState(int newCurrent, ButtonCC structureB) {
+
+        if (this.isMultiCC()) {
+            if (structureB.isPositiv()) {
+                if (this.currentState < steps.size() - 1)
+                    this.currentState++;
+                else
+                    this.currentState = 0;
+            } else {
+                if (this.currentState > 0)
+                    this.currentState--;
+                else
+                    this.currentState = steps.size()-1;
+            }
+
+        } else {
+            this.currentState = newCurrent;
+        }
+    }
+
+    public void addButton(MyLocation myLocation, boolean sens2) {
+        // TODO Auto-generated method stub
+        
+        ButtonCC b = new ButtonCC(myLocation.getWordLocation());
+        b.setPositiv(sens2);
+        
+        this.boutons.add(b);
+        
+    }
+
+    public boolean isBreakable() { 
+        return isBreakable;
+    }
+
+    public boolean canBeAnimated() {
+       
+        boolean animated = this.isAnimated;
+        
+        if(this.isDateLimited)
+        { 
+            Calendar cal = Calendar.getInstance(); 
+            
+            long currentTime = cal.getTime().getTime();
+            
+            if(this.lastUsed == null)
+            {
+                System.out.println("set used");
+               cal.add(Calendar.SECOND, (int) -this.timeForDateLimited);
+               this.lastUsed = cal.getTime();
+            }
+            long res = currentTime - this.lastUsed.getTime(); 
+            
+            long test = currentTime - this.lastUsed.getTime();
+            long borne = this.timeForDateLimited * 1000;
+            
+            if(currentTime - this.lastUsed.getTime() <= this.timeForDateLimited * 1000)
+            {
+                return false;
+            }
+            else
+            {
+                return !animated && true;
+            }             
+        }
+        
+        return animated;
+    }
+
 
 }

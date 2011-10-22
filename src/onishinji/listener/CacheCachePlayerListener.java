@@ -1,18 +1,20 @@
 package onishinji.listener;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import onishinji.ClicClac;
 import onishinji.StructureCC;
 import onishinji.models.MyLocation;
-
+import org.bukkit.block.Sign;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerListener; 
 
 public class CacheCachePlayerListener extends PlayerListener {
 
@@ -22,8 +24,18 @@ public class CacheCachePlayerListener extends PlayerListener {
         // TODO Auto-generated constructor stub
         plugin = giveItemOnEvent;
     }
-
+    
     public void onPlayerInteract(PlayerInteractEvent event) {
+        
+        // click droit pancarte
+        if (event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            
+            if(event.getClickedBlock().getState() instanceof Sign)
+            {
+                Block block = event.getClickedBlock();
+               plugin.checkSign(block, event.getPlayer().getWorld(), event.getPlayer());
+            }
+        }
         
         if (event.getClickedBlock() != null && event.getAction() == Action.LEFT_CLICK_BLOCK) {
 
@@ -63,7 +75,7 @@ public class CacheCachePlayerListener extends PlayerListener {
                 StructureCC currentStructure = plugin.playerActiveLink.get(player);
 
                 Location location = player.getTargetBlock(null, 256).getLocation();
-                currentStructure.boutons.add(new MyLocation(location));
+                currentStructure.addButton(new MyLocation(location), currentStructure.sens);
                 player.sendMessage("Bloc interrupteur sauvegardé pour  " + currentStructure.name + ", Have Fun :)");
                 
                 plugin.playerActiveLink.remove(player);
@@ -82,8 +94,11 @@ public class CacheCachePlayerListener extends PlayerListener {
         if(finish)
         {
             
-            player.sendMessage("Merci, la zone Clic Clac a été vidé, tappe /cc-end pour terminer ou /cc-undo");
-            player.sendMessage("Veuillez maintenant construire la nouvelle forme à l'intérieur de la zone.");
+            // Che
+            
+            player.sendMessage(ChatColor.YELLOW+"Merci, la zone Clic Clac a été vidé, "+ChatColor.RED+"tappe /cc-end"+ChatColor.YELLOW+" pour terminer ou "+ChatColor.RED+"/cc-undo"+ChatColor.YELLOW);
+            player.sendMessage(ChatColor.YELLOW+"Si tu veux faire une animation, tappe "+ChatColor.RED+"/cc-next "+ChatColor.YELLOW+" pour passer à la prochaine étape");
+            player.sendMessage(ChatColor.YELLOW+"Veuillez maintenant construire la nouvelle forme à l'intérieur de la zone.");
              
             currentStructure.createStartStateAndRemoveInnerBloc(player);
             

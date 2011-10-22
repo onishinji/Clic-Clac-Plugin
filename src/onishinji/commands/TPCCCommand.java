@@ -1,19 +1,19 @@
 package onishinji.commands;
 
 import onishinji.ClicClac;
+import onishinji.StructureCC;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RemoveCCCommand implements CommandExecutor {
+public class TPCCCommand implements CommandExecutor {
 
-    private ClicClac plugin;
-
-    public RemoveCCCommand(ClicClac cacheCache) {
-        plugin = cacheCache;
+    ClicClac plugin;
+    public TPCCCommand(ClicClac clicClac) {
         // TODO Auto-generated constructor stub
+        plugin = clicClac;
     }
 
     @Override
@@ -21,12 +21,12 @@ public class RemoveCCCommand implements CommandExecutor {
         if (!(sender instanceof Player)) {
             return false;
         }
-        
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
 
+        if (sender instanceof Player) {
+
+            Player player = (Player) sender;
             
-            if (!plugin.hasGuard((Player) sender, "cc.remove")) {
+            if (!plugin.hasGuard((Player) sender, "cc.tp")) {
                 return true;
             }
 
@@ -35,16 +35,22 @@ public class RemoveCCCommand implements CommandExecutor {
 
             if (split.length < 1) {
                 player.sendMessage("Euh, je n'ai pas bien saisie le nom de la zone Clic Clac ...");
+                return true;
             } else {
                 String eventName = split[0];
                 String groupName =  plugin.getGroupNameFromArgs(args);
 
                 if (plugin.structureExist(eventName,groupName)) {
-                    player.sendMessage("Suppression de la zone Clic Clac " + eventName + " ("+ groupName+ ") terminé." );
-                    plugin.removeStructure(eventName,groupName, player);
+              
+                    StructureCC cc = plugin.getStructure(eventName, groupName);
+                    player.teleport(cc.blocsFinal.get(0).getLocation(plugin.getServer().getWorld(cc.worldName)));                    
+                    
+                    
+                    return true;
 
                 } else {
                     player.sendMessage("Je ne connais pas cette zone Clic Clac");
+                    return true;
                 }
             }
         }
