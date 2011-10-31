@@ -34,7 +34,7 @@ public class TPCCCommand implements CommandExecutor {
             String[] split = args;
 
             if (split.length < 1) {
-                player.sendMessage("Euh, je n'ai pas bien saisie le nom de la zone Clic Clac ...");
+                player.sendMessage(plugin.getLocale("cc.error.missingName"));
                 return true;
             } else {
                 String eventName = split[0];
@@ -49,7 +49,7 @@ public class TPCCCommand implements CommandExecutor {
                     return true;
 
                 } else {
-                    player.sendMessage("Je ne connais pas cette zone Clic Clac");
+                    player.sendMessage(plugin.getLocale("cc.error.unknowCC"));
                     return true;
                 }
             }

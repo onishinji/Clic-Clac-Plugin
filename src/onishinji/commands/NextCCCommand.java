@@ -37,14 +37,8 @@ public class NextCCCommand implements CommandExecutor {
             {
                 StructureCC currentStructure = plugin.playerCreateCommand.get(player);
                 currentStructure.addStep(player);
-                player.sendMessage(ChatColor.YELLOW+" l'étape vient d'être sauvegardé, construit la nouvelle maintenant");
+                player.sendMessage(plugin.getLocale("cc.create.nextSaved"));
  
-                return true;
-                
-            }
-            else
-            {
-                player.sendMessage("Tu dois commencer par '/cc-create NAME' avant de terminer");
                 return true;
             }
         }

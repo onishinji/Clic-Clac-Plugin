@@ -19,7 +19,7 @@ public class UndoCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] split) {
 
         if (!(sender instanceof Player)) {
-            return false;
+            return true;
         }
 
         Player player = (Player) sender;
@@ -32,15 +32,11 @@ public class UndoCommand implements CommandExecutor {
         
         if (plugin.playerHasBeginStructure(player)) {
 
-            player.sendMessage("Annulation de la dernière zone  Clic Clac");
+            player.sendMessage(plugin.getLocale("cc.undo.done"));
             plugin.undoRemove(player);
-        }
-        else
-        {
-            player.sendMessage("Rien trouvé à annuler");
-        }
+        } 
 
-        return false;
+        return true;
     }
 
 }

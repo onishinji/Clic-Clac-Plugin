@@ -34,20 +34,20 @@ public class LinkReverseCC implements CommandExecutor {
             String[] split = args;
 
             if (split.length < 1) {
-                player.sendMessage("Euh, je n'ai pas bien saisie le nom de la zone Clic Clac ...");
+                player.sendMessage(plugin.getLocale("cc.error.missingName"));
                 return true;
             } else {
                 String eventName = split[0];
                 String groupName =  plugin.getGroupNameFromArgs(args);
                 
                 if (plugin.structureExist(eventName,groupName)) {
-                    player.sendMessage("Clique sur le bloc qui te servira d'interrupteur.");
+                    player.sendMessage(plugin.getLocale("cc.link.click"));
                     plugin.activeLink(eventName,groupName, player, false);
                     
                     return true;
 
                 } else {
-                    player.sendMessage("Je ne connais pas cette zone Clic Clac");
+                    player.sendMessage(plugin.getLocale("cc.error.unknowCC"));
                     return true;
                 }
             }

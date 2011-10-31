@@ -412,7 +412,7 @@ public class StructureCC implements Serializable {
             }             
         }
         
-        return animated;
+        return !animated;
     }
 
 

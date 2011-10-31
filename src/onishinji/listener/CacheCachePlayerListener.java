@@ -59,12 +59,9 @@ public class CacheCachePlayerListener extends PlayerListener {
                 if(!finish)
                 {
                     if (positions.size() == 1) {
-                        player.sendMessage("Clique sur le deuxième point");
-                    } else if (positions.size() == 1) {
-                        //player.sendMessage("Clique sur le deuxième point");
+                        player.sendMessage(plugin.getLocale("cc.create.secondInstruction"));
                     }
-                }
-            }
+                }            }
             
 
             //////////////////////////////////////////////////////////////////
@@ -76,7 +73,7 @@ public class CacheCachePlayerListener extends PlayerListener {
 
                 Location location = player.getTargetBlock(null, 256).getLocation();
                 currentStructure.addButton(new MyLocation(location), currentStructure.sens);
-                player.sendMessage("Bloc interrupteur sauvegardé pour  " + currentStructure.name + ", Have Fun :)");
+                player.sendMessage(String.format(plugin.getLocale("cc.link.save"), currentStructure.name, currentStructure.groupName));
                 
                 plugin.playerActiveLink.remove(player);
                 
@@ -96,9 +93,9 @@ public class CacheCachePlayerListener extends PlayerListener {
             
             // Che
             
-            player.sendMessage(ChatColor.YELLOW+"Merci, la zone Clic Clac a été vidé, "+ChatColor.RED+"tappe /cc-end"+ChatColor.YELLOW+" pour terminer ou "+ChatColor.RED+"/cc-undo"+ChatColor.YELLOW);
-            player.sendMessage(ChatColor.YELLOW+"Si tu veux faire une animation, tappe "+ChatColor.RED+"/cc-next "+ChatColor.YELLOW+" pour passer à la prochaine étape");
-            player.sendMessage(ChatColor.YELLOW+"Veuillez maintenant construire la nouvelle forme à l'intérieur de la zone.");
+            player.sendMessage(plugin.getLocale("cc.create.cuboidHasBeenCreated.text1"));
+            player.sendMessage(plugin.getLocale("cc.create.cuboidHasBeenCreated.text2"));
+            player.sendMessage(plugin.getLocale("cc.create.cuboidHasBeenCreated.text3")); 
              
             currentStructure.createStartStateAndRemoveInnerBloc(player);
             

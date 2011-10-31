@@ -36,8 +36,8 @@ public class BreakCCCommand implements CommandExecutor {
             
             String[] split = args;
 
-            if (split.length < 1) {
-                player.sendMessage("Euh, je n'ai pas bien saisie le nom de la zone Clic Clac ...");
+            if (split.length < 1) {                
+                player.sendMessage(plugin.getLocale("cc.error.missingName"));
                 return true;
             } else {
                 String eventName = split[0];
@@ -51,17 +51,17 @@ public class BreakCCCommand implements CommandExecutor {
                     
                     if(cc.isBreakable())
                     {
-                        player.sendMessage(ChatColor.YELLOW +" Cette zone Clic Clac est cassable maintenant");
+                        player.sendMessage(plugin.getLocale("cc.break.isNowActive"));
                     }
                     else
                     {
-                        player.sendMessage(ChatColor.YELLOW +" Cette zone Clic Clac n'est plus cassable maintenant");
+                        player.sendMessage(plugin.getLocale("cc.break.isNowProtected"));
                     }
                     
                     return true;
 
                 } else {
-                    player.sendMessage("Je ne connais pas cette zone Clic Clac");
+                    player.sendMessage(plugin.getLocale("cc.error.unknowCC"));
                     return true;
                 }
             }

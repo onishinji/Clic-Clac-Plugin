@@ -34,17 +34,17 @@ public class RemoveCCCommand implements CommandExecutor {
             String[] split = args;
 
             if (split.length < 1) {
-                player.sendMessage("Euh, je n'ai pas bien saisie le nom de la zone Clic Clac ...");
+                player.sendMessage(plugin.getLocale("cc.error.missingName"));
             } else {
                 String eventName = split[0];
                 String groupName =  plugin.getGroupNameFromArgs(args);
 
                 if (plugin.structureExist(eventName,groupName)) {
-                    player.sendMessage("Suppression de la zone Clic Clac " + eventName + " ("+ groupName+ ") terminé." );
+                    player.sendMessage(String.format(plugin.getLocale("cc.remove.done"), eventName, groupName));
                     plugin.removeStructure(eventName,groupName, player);
 
                 } else {
-                    player.sendMessage("Je ne connais pas cette zone Clic Clac");
+                    player.sendMessage(plugin.getLocale("cc.error.unknowCC"));
                 }
             }
         }

@@ -35,7 +35,7 @@ public class CreateCCCommand implements CommandExecutor {
             String[] split = args;
 
             if (split.length < 1) {
-                player.sendMessage("Euh, je n'ai pas bien saisie le nom du Clic Clac ...");
+                player.sendMessage(plugin.getLocale("cc.error.missingName"));
                 return true;
             } else {
                 String eventName = split[0];
@@ -43,17 +43,17 @@ public class CreateCCCommand implements CommandExecutor {
                
                 if (!plugin.structureExist(eventName, groupName)) {
                     if (!plugin.playerHasBeginStructure(player)) {
-                        player.sendMessage("clique sur le premier point de la zone Clic Clac, pour annuler retappe la même commande ou /cc-undo");
+                        player.sendMessage(plugin.getLocale("cc.create.firstInstruction"));
                     } else {
                         
                         plugin.undoRemove(player);
-                        player.sendMessage("Tu as annulé cette zone Clic Clac en rettapant la commande, ne te trompe pas cette fois ci :)");
-                        player.sendMessage("clique sur le premier point de la zone de cache cache");
+                        player.sendMessage(plugin.getLocale("cc.create.cancelByRepeatCreate"));
+                        player.sendMessage(plugin.getLocale("cc.create.firstInstruction"));
                     }
 
                     plugin.startStructure(player, eventName, groupName);
                 } else {
-                    player.sendMessage("Désolé, une zone Clic Clac cache porte déjà ce nom dans le groupe '" + groupName+"', recommence");
+                    player.sendMessage(String.format(plugin.getLocale("cc.create.error.nameIsTakenInGroup"),groupName));
                 }
             }
 

@@ -17,6 +17,8 @@ public class InfoCCCommand implements CommandExecutor {
 
     ClicClac plugin;
 
+    String prefixInfo = " > ";
+    
     public InfoCCCommand(ClicClac clicClac) {
         // TODO Auto-generated constructor stub
         plugin = clicClac;
@@ -40,7 +42,7 @@ public class InfoCCCommand implements CommandExecutor {
             String[] split = args;
 
             if (split.length < 1) {
-                player.sendMessage("Euh, je n'ai pas bien saisie le nom de la zone Clic Clac ...");
+                player.sendMessage(plugin.getLocale("cc.error.missingName"));
                 return true;
             } else {
                 String eventName = split[0];
@@ -50,10 +52,36 @@ public class InfoCCCommand implements CommandExecutor {
 
                     StructureCC cc = plugin.getStructure(eventName, groupName);
 
-                    player.sendMessage(ChatColor.YELLOW + "Information de la Zone clic clac " + cc.name + " du groupe '" + cc.groupName + "'");
-                    player.sendMessage(ChatColor.YELLOW + " > crée par " + cc.playerName + " dans le monde '" + cc.worldName+"'");
-                    player.sendMessage(ChatColor.YELLOW + " > elle contient " + cc.blocsInitial.toArray().length + " blocs");
-                    if(cc.isBreakable()) player.sendMessage(ChatColor.YELLOW + " > Elle est cassable !");
+                    player.sendMessage(String.format(plugin.getLocale("cc.info.name"), cc.name, cc.groupName));
+                    player.sendMessage(prefixInfo + String.format(plugin.getLocale("cc.info.createdBy"), cc.playerName, cc.worldName));
+                    player.sendMessage(prefixInfo + String.format(plugin.getLocale("cc.info.stats.default"), cc.blocsInitial.toArray().length));
+                   
+                    if(cc.isMultiCC())
+                    {
+                        player.sendMessage(prefixInfo + String.format(plugin.getLocale("cc.info.animated.steps"), cc.steps.size(), cc.currentState+1));
+                    }
+                    
+                    if(cc.isBreakable()) {
+                        player.sendMessage(prefixInfo + plugin.getLocale("cc.break.isNowActive"));
+                    }
+                    else
+                    {
+                        player.sendMessage(prefixInfo + plugin.getLocale("cc.break.isNowProtected"));
+                    }
+                    
+                    if(cc.isDateLimited) {
+                        player.sendMessage(prefixInfo + String.format(plugin.getLocale("cc.info.stats.dateLimited"), cc.timeForDateLimited)); 
+                    }
+                    
+                    if(cc.canBeAnimated())
+                    {
+                        player.sendMessage(prefixInfo + plugin.getLocale("cc.info.animated.ready"));
+                    }
+                    else 
+                    {
+                        player.sendMessage(prefixInfo + String.format(plugin.getLocale("cc.info.animated.notReady"), cc.lastUsed));
+ 
+                    }
 
                    this.checkImportantBloc(player, cc, Material.IRON_BLOCK);
                    this.checkImportantBloc(player, cc, Material.IRON_ORE);
@@ -69,7 +97,7 @@ public class InfoCCCommand implements CommandExecutor {
                     return true;
 
                 } else {
-                    player.sendMessage("Je ne connais pas cette zone Clic Clac");
+                    player.sendMessage(prefixInfo + plugin.getLocale("cc.error.unknowCC"));
                     return true;
                 }
             }
@@ -101,8 +129,9 @@ public class InfoCCCommand implements CommandExecutor {
             nbImportantBlock = nbImportantBlockStep1 + nbImportantBlockStep2;
             
             if(nbImportantBlock > 0)
-            { 
-                player.sendMessage(ChatColor.YELLOW + "!!! il y a " + nbImportantBlock +" blocs de " +matRef +" (" + nbImportantBlockStep1 + " dans l'état 1, " + nbImportantBlockStep2 +" dans l'état 2)");
+            {    
+                player.sendMessage(prefixInfo + String.format(plugin.getLocale("cc.info.warning.simple"), nbImportantBlock, matRef, nbImportantBlockStep1, nbImportantBlockStep2));
+             
             }
         }
         else
@@ -113,8 +142,8 @@ public class InfoCCCommand implements CommandExecutor {
                 i++;
                 int nbImportantBlock = this.countBlocOf(blocs, matRef);
                 if(nbImportantBlock > 0)
-                {
-                    player.sendMessage(ChatColor.YELLOW + "!!! il y a " + nbImportantBlock +" blocs de " +matRef + " dans l'étape " + i);
+                { 
+                    player.sendMessage(prefixInfo + String.format(plugin.getLocale("cc.info.warning.multi"), nbImportantBlock, matRef, i)); 
                 }
             }
         }

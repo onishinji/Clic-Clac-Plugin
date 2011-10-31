@@ -34,7 +34,7 @@ public class MoveCCCommand implements CommandExecutor {
             String[] split = args;
 
             if (split.length < 1) {
-                player.sendMessage("Euh, je n'ai pas bien saisie le nom du Clic Clac ...");
+                player.sendMessage(plugin.getLocale("cc.error.missingName"));
                 return true;
             } else {
                 String eventName = split[0];
@@ -69,14 +69,14 @@ public class MoveCCCommand implements CommandExecutor {
                 }
 
                 if (oldGroupName.equals("") || newGroupName.equals("")) {
-                    player.sendMessage(ChatColor.RED + "Il faut tapper /cc-move nomZoneCC nomAncienGroupe > nomNouveauGroupe");
+                    player.sendMessage(plugin.getLocale("cc.move.info")); 
                     return true;
                 }
 
                 if (plugin.structureExist(eventName, oldGroupName)) {
 
                     if (plugin.structureExist(eventName, newGroupName)) {
-                        player.sendMessage(ChatColor.RED + "On ne peut déplacer un clic clac dans un groupe ayant un clic clac du même nom");
+                        player.sendMessage(plugin.getLocale("cc.move.error"));
                         return true;
                     }
                     StructureCC current = plugin.getStructure(eventName, oldGroupName);
@@ -86,9 +86,9 @@ public class MoveCCCommand implements CommandExecutor {
                     current.groupName = newGroupName;
                     plugin.saveStructure(current);
 
-                    player.sendMessage("La zone clic clac a été déplace de '" + oldGroupName + "' à '" + newGroupName + "' ");
+                    player.sendMessage(String.format(plugin.getLocale("cc.move.done"), oldGroupName, newGroupName));
                 } else {
-                    player.sendMessage(ChatColor.RED + "Zone clic clac inexistante.");
+                    player.sendMessage(plugin.getLocale("cc.error.unknowCC"));
                 }
             }
 

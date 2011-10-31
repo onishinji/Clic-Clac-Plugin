@@ -37,16 +37,10 @@ public class EndCCCommand implements CommandExecutor {
                 StructureCC currentStructure = plugin.playerCreateCommand.get(player);
                 currentStructure.finishStructure(player);
                 plugin.saveStructure(currentStructure);
-                player.sendMessage("Zone Clic Clac '" + currentStructure.name + "' crée (dans le groupe '" + currentStructure.groupName+"'), tappe '/cc-link "+ currentStructure.name + " " + currentStructure.groupName+ "' puis clique sur un interrupteur");
+                player.sendMessage(String.format(plugin.getLocale("cc.create.end"), currentStructure.name, currentStructure.groupName, currentStructure.name, currentStructure.groupName));
 
                 plugin.playerCreateCommand.remove(player);
-                return true;
-                
-            }
-            else
-            {
-                player.sendMessage("Tu dois commencer par '/cc-create NAME' avant de terminer");
-                return true;
+                return true;   
             }
         }
         

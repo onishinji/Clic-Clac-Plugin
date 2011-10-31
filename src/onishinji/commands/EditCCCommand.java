@@ -36,7 +36,7 @@ public class EditCCCommand implements CommandExecutor {
             String[] split = args;
 
             if (split.length < 1) {
-                player.sendMessage("Euh, je n'ai pas bien saisie le nom du Clic Clac ...");
+                player.sendMessage(plugin.getLocale("cc.error.missingName"));
                 return true;
             } else {
                 String eventName = split[0];
@@ -46,9 +46,9 @@ public class EditCCCommand implements CommandExecutor {
                 {
                     if (plugin.structureExist(eventName, groupName)) {
                         plugin.getStructure(eventName, groupName).isEditable = true;
-                        player.sendMessage("La zone clic clac est éditable, tappe '/cc-end-edit "+ eventName +" " + groupName+ "' pour terminer ");
+                        player.sendMessage(String.format(plugin.getLocale("cc.edit.start"), eventName, groupName));
                     } else {
-                        player.sendMessage(ChatColor.RED + "Zone clic clac inexistante.");
+                        player.sendMessage(plugin.getLocale("cc.error.unknowCC"));
                     }
                 }
                 
@@ -58,7 +58,7 @@ public class EditCCCommand implements CommandExecutor {
                         StructureCC current = plugin.getStructure(eventName,groupName);
                         if(!current.isEditable)
                         {
-                            player.sendMessage("Cette zone clic clac n'était pas éditable ...");
+                            player.sendMessage(plugin.getLocale("cc.edit.start.error.ccWasntEditable"));
                             return true;
                         }
                         current.isEditable = false;
@@ -66,9 +66,9 @@ public class EditCCCommand implements CommandExecutor {
                         plugin.removeStructure(eventName,groupName, player);
                         plugin.saveStructure(current);
                         
-                        player.sendMessage("La zone clic clac n'est plus éditable et a été sauvegardé");
+                        player.sendMessage(plugin.getLocale("cc.edit.end"));
                     } else {
-                        player.sendMessage(ChatColor.RED + "Zone clic clac inexistante.");
+                        player.sendMessage(plugin.getLocale("cc.error.unknowCC"));
                     }
                 }
                 

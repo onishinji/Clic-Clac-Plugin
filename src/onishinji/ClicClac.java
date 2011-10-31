@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
+import me.graindcafe.gls.DefaultLanguage;
+import me.graindcafe.gls.Language;
 import onishinji.commands.BreakCCCommand;
 import onishinji.commands.CreateCCCommand;
 import onishinji.commands.EditCCCommand;
@@ -54,6 +58,8 @@ public class ClicClac extends JavaPlugin {
     public HashMap<Player, StructureCC> playerActiveLink = new HashMap<Player, StructureCC>();
     public ArrayList<StructureCC> structuresLoaded = new ArrayList<StructureCC>();
     public PermissionHandler _permissions;
+    private Logger log;
+    private Language lang;
 
     @Override
     public void onDisable() {
@@ -69,7 +75,8 @@ public class ClicClac extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
+        log = Logger.getLogger("Minecraft");
+        
         _permissions = null;
 
         playerCreateCommand = new HashMap<Player, StructureCC>();
@@ -110,7 +117,10 @@ public class ClicClac extends JavaPlugin {
         if (!testInstall.exists()) {
             testInstall.mkdir();
         }
-
+        
+        this.initConfig();
+        this.initLanguage();
+       
         // Lecture du répertoire
         try {
             File[] files = SLAPI.listFiles("plugins", "ClicClac");
@@ -174,13 +184,123 @@ public class ClicClac extends JavaPlugin {
         System.out.println(">>> Clic Clac est en route !!");
     }
 
+    private void initLanguage() {
+ 
+        // i18n clic clac
+        DefaultLanguage.setAuthor("Onishinji");
+        DefaultLanguage.setName("defaultlang");
+        DefaultLanguage.setVersion(Constants.LanguageFileVersion);
+        DefaultLanguage.setLanguagesFolder(getDataFolder().getPath()+"/languages/");
+        DefaultLanguage.setLocales(new HashMap<String, String>() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 1L;
+
+            {
+
+                put("cc.forbidden.command",                 ChatColor.RED + "[ClicClac] You do not have permission to perform that action!");
+                put("cc.error.missingName",                 ChatColor.RED + "Erreur: Il faut nommer le clic clac");
+                put("cc.error.unknowCC",                    ChatColor.RED +  "Désolé, ce clic clac n'existe pas");
+                
+                put("cc.create.firstInstruction",           ChatColor.YELLOW + "Clique sur le premier point du clic Clac, pour annuler retappe la même commande ou /cc-undo");
+                put("cc.create.secondInstruction",          ChatColor.YELLOW + "Clique sur le deuxième point");
+                put("cc.create.cancelByRepeatCreate",       ChatColor.YELLOW + "Tu as annulé ce Clic Clac en rettapant la commande, ne te trompe pas cette fois ci :)");
+                put("cc.create.error.nameIsTakenInGroup",   ChatColor.YELLOW + "Désolé, un Clic Clac cache porte déjà ce nom dans le groupe %s, recommence");
+                put("cc.create.end",                        ChatColor.GREEN + "Félicitation, le clic Clac '%s' a été crée dans le groupe '%s'), pour l'utiliser tappe '/cc-link %s %s' puis clique sur un interrupteur" );
+                
+                put("cc.create.cuboidHasBeenCreated.text1", ChatColor.YELLOW + "Merci, la zone du Clic Clac a été vidé, "+ChatColor.RED+"tappe /cc-end"+ChatColor.YELLOW+" pour terminer ou "+ChatColor.RED+"/cc-undo"+ChatColor.YELLOW);
+                put("cc.create.cuboidHasBeenCreated.text2", ChatColor.YELLOW + "Si tu veux faire une animation, tappe "+ChatColor.RED+"/cc-next "+ChatColor.YELLOW+" pour passer à la prochaine étape");
+                put("cc.create.cuboidHasBeenCreated.text3", ChatColor.YELLOW + "Veuillez maintenant construire la nouvelle forme à l'intérieur de la zone.");
+                
+                put("cc.create.nextSaved",                  ChatColor.YELLOW + "l'étape vient d'être sauvegardé, construit la nouvelle maintenant");
+                
+                
+                put("cc.undo.done",                         ChatColor.GREEN + "Vous venez d'annuler la création d'un clic clac");
+                
+                put("cc.edit.start",                        ChatColor.YELLOW + "La zone clic clac est éditable, tappe '/cc-end-edit %s %s' pour terminer ");
+                put("cc.edit.end",                          ChatColor.GREEN + "La zone clic clac n'est plus éditable et a été sauvegardé");
+                put("cc.edit.start.error.ccWasntEditable",  ChatColor.RED + "Cette zone clic clac n'était pas éditable ...");
+                
+                put("cc.link.save",                         ChatColor.GREEN + "Bloc interrupteur sauvegardé pour  '%s %s', Have Fun :)");
+                put("cc.link.click",                        ChatColor.YELLOW + "Clique sur le bloc qui te servira d'interrupteur.");
+                
+                put("cc.remove.done",                       ChatColor.GREEN + "Suppression de la zone Clic Clac '%s %s' terminé.");
+                
+                put("cc.info.name",                         ChatColor.YELLOW + "Information de la Zone clic clac '%s' du groupe '%s'");
+                put("cc.info.createdBy",                    ChatColor.YELLOW + "crée par %s dans le monde '%s'");
+                put("cc.info.stats.default",                ChatColor.YELLOW +  "Elle contient %s blocs");
+                put("cc.info.animated.steps",               ChatColor.YELLOW +  "Elle a %s états et est affiché dans son état %s");
+                put("cc.info.animated.ready",               ChatColor.YELLOW +  "Elle peut être animé maintenant");
+                put("cc.info.animated.notReady",            ChatColor.YELLOW +  "Elle ne peut pas être animé maintenant, dernière utilisation %s");
+                put("cc.info.warning.simple",               ChatColor.YELLOW +   "!!! il y a %s blocs de %s ( %s dans l'état 1, %s dans l'état 2)");
+                put("cc.info.warning.multi",                ChatColor.YELLOW +   "!!! il y a %s blocs de %s ( %s dans l'état 1, %s dans l'état %s)");
+                
+                
+                put("cc.move.info",                         ChatColor.YELLOW +  "Il faut tapper /cc-move nomZoneCC nomAncienGroupe > nomNouveauGroupe");
+                put("cc.move.done",                         ChatColor.GREEN +  "La zone clic clac a été déplace de '%s' à '%s' ");
+                put("cc.move.error",                        ChatColor.RED + "On ne peut déplacer un clic clac dans un groupe ayant un clic clac du même nom");
+                
+                
+                put("cc.info.break",                        ChatColor.YELLOW + "Elle a %s états et est affiché dans son état %s");
+                put("cc.info.stats.dateLimited",            ChatColor.YELLOW + "Elle a un usage limité à une utilisation toutes les %s secondes");
+                
+                
+                
+                put("cc.settime.isNowLimited",              ChatColor.GREEN +  "Ce clicClac est désormais limité à une utilisation toutes les %s secondes");
+                put("cc.settime.isNowRemoved",              ChatColor.GREEN + "Vous venez de supprimer la limitation temporelle de ce clic clac");
+                put("cc.break.isNowActive",                 ChatColor.YELLOW + "Cette zone Clic Clac est cassable");
+                put("cc.break.isNowProtected",              ChatColor.YELLOW + "Cette zone Clic Clac n'est plus cassable");
+                
+                
+                put("File.DefaultLanguageFile","# This is your default language file \n# You should not edit it !\n# Create another language file (custom.yml) \n# and put 'Default: english' if your default language is english\n");
+                put("File.LanguageFileComplete", "# Your language file is complete\n");
+                put("File.TranslationsToDo", "# Translations to do in this language file\n");
+                put("Warning.LanguageFileOutdated", "Your current language file is outdated");
+                put("Warning.LanguageFileMissing", "The chosen language file is missing");
+                put("Info.ChosenLanguage", "Choosen language : %s (default). Provided by : %s.");
+            }
+        });  
+        
+        String language = getConfiguration().getString("PluginMode.Language", "defaultlang");
+        lang = Language.init(this.log, language); 
+        
+    }
+
+    public String getLocale(String key) {
+        return lang.get(key);
+    }
+    
+    private void initConfig() {
+        getConfiguration().setHeader("# Clic Clac Config File Version " + Constants.ConfigFileVersion + " \n");
+        HashMap<String, Object> DefaultConfiguration = new HashMap<String, Object>() {
+            private static final long serialVersionUID = 1L;
+
+            { 
+                put("PluginMode.Language", "defaultlang");
+
+            }
+        };
+        for (String key : getConfiguration().getAll().keySet()) {
+            DefaultConfiguration.remove(key);
+        }
+        
+        // Add missings keys
+        for (Entry<String, Object> e : DefaultConfiguration.entrySet()) {
+            getConfiguration().setProperty(e.getKey(), e.getValue());
+        }
+        // Create the file if it doesn't exist
+        getConfiguration().save();
+    }
+
+    
     public boolean has(Player player, String permissionsNode) {
         return _permissions.has(player, permissionsNode);
     }
 
     public boolean hasGuard(Player player, String permissionsNode) {
         if (_permissions != null && !this.has(player, permissionsNode)) {
-            player.sendMessage(ChatColor.RED + "[ClicClac] You do not have permission to perform that action!");
+            player.sendMessage(this.getLocale("cc.forbidden.command"));
             return false;
         } else {
             return true;
@@ -432,7 +552,7 @@ public class ClicClac extends JavaPlugin {
                     }
                 }
 
-            }, 0, delay);
+            }, delay, delay);
         }
     }
 
@@ -504,11 +624,11 @@ public class ClicClac extends JavaPlugin {
         {
             if(b)
             {
-                player.sendMessage(ChatColor.YELLOW +" Ce clicClac est désormais limité à une utilisation toutes les " + delay +" secondes");
+                player.sendMessage(String.format(this.getLocale("cc.settime.isNowLimited"), delay));
             }
             else
             {       
-                player.sendMessage(ChatColor.YELLOW +" Vous venez de supprimer la limitation temporelle de ce clicClac");
+                player.sendMessage(this.getLocale("cc.settime.isNowRemoved"));
             }
         }
         
@@ -517,5 +637,6 @@ public class ClicClac extends JavaPlugin {
         this.modifyStructure(test);
         
     }
+    
 
 }
