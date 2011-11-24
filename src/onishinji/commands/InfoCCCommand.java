@@ -137,14 +137,23 @@ public class InfoCCCommand implements CommandExecutor {
         else
         {
             int i=0;
+            int nbTotal = 0;
+            String msg = "";
+            
             for(ArrayList<BlockManager> blocs : cc.steps)
             { 
                 i++;
                 int nbImportantBlock = this.countBlocOf(blocs, matRef);
                 if(nbImportantBlock > 0)
                 { 
-                    player.sendMessage(prefixInfo + String.format(plugin.getLocale("cc.info.warning.multi"), nbImportantBlock, matRef, i, cc.steps.size())); 
+                    nbTotal = nbTotal + nbImportantBlock;
                 }
+            }
+
+            if(nbTotal > 0)
+            {
+                msg = prefixInfo + String.format(plugin.getLocale("cc.info.warning.multi"), nbTotal, matRef);
+                player.sendMessage(msg);
             }
         }
        
