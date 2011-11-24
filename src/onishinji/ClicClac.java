@@ -234,7 +234,7 @@ public class ClicClac extends JavaPlugin {
                 put("cc.info.animated.ready",               ChatColor.YELLOW +  "Elle peut être animé maintenant");
                 put("cc.info.animated.notReady",            ChatColor.YELLOW +  "Elle ne peut pas être animé maintenant, dernière utilisation %s");
                 put("cc.info.warning.simple",               ChatColor.YELLOW +   "!!! il y a %s blocs de %s ( %s dans l'état 1, %s dans l'état 2)");
-                put("cc.info.warning.multi",                ChatColor.YELLOW +   "!!! il y a %s blocs de %s ( %s dans l'état 1, %s dans l'état %s)");
+                put("cc.info.warning.multi",                ChatColor.YELLOW +   "!!! il y a %s blocs de %s dans l'état %s / %s)");
                 
                 
                 put("cc.move.info",                         ChatColor.YELLOW +  "Il faut tapper /cc-move nomZoneCC nomAncienGroupe > nomNouveauGroupe");
