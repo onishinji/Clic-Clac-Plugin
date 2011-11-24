@@ -52,13 +52,14 @@ public class EditCCCommand implements CommandExecutor {
                     }
                 }
                 
+                System.out.println("current "  + currentMode);
                 if(currentMode.equals("end"))
-                {
+                { 
                     if (plugin.structureExist(eventName, groupName)) {
                         StructureCC current = plugin.getStructure(eventName,groupName);
                         if(!current.isEditable)
                         {
-                            player.sendMessage(plugin.getLocale("cc.edit.start.error.ccWasntEditable"));
+                            player.sendMessage(plugin.getLocale("cc.edit.errorccWasntEditable"));
                             return true;
                         }
                         current.isEditable = false;

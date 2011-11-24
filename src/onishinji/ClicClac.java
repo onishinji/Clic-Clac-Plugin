@@ -220,7 +220,7 @@ public class ClicClac extends JavaPlugin {
                 
                 put("cc.edit.start",                        ChatColor.YELLOW + "La zone clic clac est éditable, tappe '/cc-end-edit %s %s' pour terminer ");
                 put("cc.edit.end",                          ChatColor.GREEN + "La zone clic clac n'est plus éditable et a été sauvegardé");
-                put("cc.edit.start.error.ccWasntEditable",  ChatColor.RED + "Cette zone clic clac n'était pas éditable ...");
+                put("cc.edit.errorccWasntEditable",  ChatColor.RED + "Cette zone clic clac n'était pas éditable ...");
                 
                 put("cc.link.save",                         ChatColor.GREEN + "Bloc interrupteur sauvegardé pour  '%s %s', Have Fun :)");
                 put("cc.link.click",                        ChatColor.YELLOW + "Clique sur le bloc qui te servira d'interrupteur.");
