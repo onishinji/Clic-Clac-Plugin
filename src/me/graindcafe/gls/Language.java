@@ -1,9 +1,13 @@
 package me.graindcafe.gls;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * @author Graindcafe
@@ -60,7 +64,7 @@ public class Language {
 	/**
 	 * The YAML file corresponding to this language
 	 */
-	protected Configuration File;
+	protected FileConfiguration File;
 	/**
 	 * The language that this is based on
 	 */
@@ -75,7 +79,7 @@ public class Language {
 	 * This language name
 	 */
 	protected String languageName;
-
+	protected File FileObject; 
 	/**
 	 * Useful for the Default Language that doesn't use File, Default and
 	 * finalStrings
@@ -94,15 +98,15 @@ public class Language {
 				.equalsIgnoreCase("yml"))
 			languageName += ".yml";
 		// try to get the file as it is given 
-		java.io.File f = new java.io.File(DefaultLanguage.languagesFolder
+		File f = new File(DefaultLanguage.languagesFolder
 				+ languageName);
 		if (!f.exists()) {
 			// no ? Maybe a problem of cases
-			java.io.File dir = new java.io.File(DefaultLanguage.languagesFolder);
+			File dir = new File(DefaultLanguage.languagesFolder);
 			if (dir.exists()) {
 				// List all files and try to get one corresponding with
 				// languageName
-				for (java.io.File file : dir.listFiles()) {
+				for (File file : dir.listFiles()) {
 					if (file.getName().equalsIgnoreCase(languageName)) {
 						f = file;
 						break;
@@ -111,11 +115,23 @@ public class Language {
 			}
 
 		}
+		this.FileObject=f;
 		// strip the extension
 		languageName = languageName.substring(0,languageName.length() - 4);
 		if (f.exists()) {
-			File = new Configuration(f);
-			File.load();
+			File = new YamlConfiguration();
+			try {
+				File.load(f);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			this.languageName = File.getString("Name", languageName);
 			if (File.getString("Default", null) != null) {
 				Default = new Language(File.getString("Default"));
@@ -184,10 +200,13 @@ public class Language {
 	 * 
 	 * @return Configuration
 	 */
-	protected Configuration getFile() {
+	protected FileConfiguration getFile() {
 		return File;
 	}
-
+	public File getFileObject()
+	{
+		return this.FileObject;
+	}
 	/**
 	 * Get the language name
 	 * 

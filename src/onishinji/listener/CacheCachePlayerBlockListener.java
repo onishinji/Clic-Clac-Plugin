@@ -7,14 +7,16 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockListener;
+import org.bukkit.event.block.BlockDamageEvent; 
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.material.Sign;
 
-public class CacheCachePlayerBlockListener extends BlockListener {
+public class CacheCachePlayerBlockListener implements Listener {
 
     private ClicClac plugin;
 
@@ -22,13 +24,15 @@ public class CacheCachePlayerBlockListener extends BlockListener {
         // TODO Auto-generated constructor stub
         plugin = giveItemOnEvent;
     }
-
+    
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (plugin.hasBlockOnStructure(new MyLocation(event.getBlock().getLocation()))) {
             event.setCancelled(true);
         }
     }
-
+    
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockRedstoneChange(BlockRedstoneEvent event) {
         MyLocation buttonLocation = new MyLocation(event.getBlock().getLocation());
   
@@ -42,11 +46,13 @@ public class CacheCachePlayerBlockListener extends BlockListener {
         plugin.onRedStoneChange(buttonLocation, event);
     }
 
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         this.checkAndRemoveLevier(block, event.getPlayer());
     }
-
+    
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockBurn(BlockBreakEvent event) {
         Block block = event.getBlock();
         this.checkAndRemoveLevier(block, event.getPlayer());
@@ -55,7 +61,8 @@ public class CacheCachePlayerBlockListener extends BlockListener {
     private void checkAndRemoveLevier(Block block, Player player) {
 
     }
-
+    
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockDamage(BlockDamageEvent event) {
 
         if (plugin.hasBlockOnStructure(new MyLocation(event.getBlock().getLocation()))) {

@@ -1,10 +1,13 @@
 package me.graindcafe.gls;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Stack;
-import org.bukkit.util.config.Configuration;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class DefaultLanguage extends Language {
 
@@ -60,7 +63,7 @@ public class DefaultLanguage extends Language {
 		while (!l.isDefault())
 			l = l.getDefault();
 		boolean retour = true;
-		Configuration lFile = l.getFile();
+		FileConfiguration lFile = l.getFile();
 		String value;
 		Stack<String> todo = new Stack<String>();
 		if (lFile == null)
@@ -85,8 +88,13 @@ public class DefaultLanguage extends Language {
 		while (!todo.isEmpty())
 			header += "# - " + todo.peek() + ": " + Strings.get(todo.pop())
 					+ "\n";
-		lFile.setHeader(header);
-		lFile.save();
+		lFile.options().header(header);
+		try {
+			lFile.save(l.getFileObject());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return retour;
 	}
 
@@ -111,16 +119,21 @@ public class DefaultLanguage extends Language {
 		}
 		if (!fileName.substring(fileName.length() - 3).equalsIgnoreCase("yml"))
 			fileName += ".yml";
-		Configuration f = new Configuration(new File(
-				DefaultLanguage.languagesFolder + fileName.toLowerCase()));
-		f.setProperty("Author", DefaultLanguage.author);
-		f.setProperty("Version", DefaultLanguage.version);
+		YamlConfiguration f = new YamlConfiguration();
+		f.set("Author", DefaultLanguage.author);
+		f.set("Version", DefaultLanguage.version);
 		for (Entry<String, String> e : Strings.entrySet()) {
-			f.setProperty(e.getKey(), e.getValue());
+			f.set(e.getKey(), e.getValue());
 		}
 
-		f.setHeader("# This is the plugin default language file \n# You should not edit it ! All changes will be undone !\n# Create another language file (custom.yml) \n# and put 'Default: english' if your default language is english\n");
-		f.save();
+		f.options().header("# This is the plugin default language file \n# You should not edit it ! All changes will be undone !\n# Create another language file (custom.yml) \n# and put 'Default: english' if your default language is english\n");
+		try {
+			f.save(new File(
+					DefaultLanguage.languagesFolder + fileName.toLowerCase()));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	/**

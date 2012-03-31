@@ -38,9 +38,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
+import org.bukkit.entity.Player; 
+
+import org.bukkit.event.Event; 
+
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -85,13 +86,17 @@ public class ClicClac extends JavaPlugin {
 
         // Register our events
         PluginManager pm = getServer().getPluginManager();
+        
+        pm.registerEvents(playerListener, this);
+        pm.registerEvents(blockListiner, this);
+        /*
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_BREAK, blockListiner, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_DAMAGE, blockListiner, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_BURN, blockListiner, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_PLACE, blockListiner, Priority.Normal, this);
-        pm.registerEvent(Event.Type.REDSTONE_CHANGE, blockListiner, Priority.Normal, this);
+        pm.registerEvent(Event.Type.REDSTONE_CHANGE, blockListiner, Priority.Normal, this);*/
 
         // Register our commands
         getCommand("cc-start").setExecutor(new CreateCCCommand(this));
@@ -261,8 +266,7 @@ public class ClicClac extends JavaPlugin {
                 put("Info.ChosenLanguage", "Choosen language : %s (default). Provided by : %s.");
             }
         });  
-        
-        String language = getConfiguration().getString("PluginMode.Language", "defaultlang");
+        String language = getConfig().getString("PluginMode.Language", "defaultlang");
         lang = Language.init(this.log, language); 
         
     }
@@ -272,6 +276,9 @@ public class ClicClac extends JavaPlugin {
     }
     
     private void initConfig() {
+    	/*
+    	getConfig().get
+    	
         getConfiguration().setHeader("# Clic Clac Config File Version " + Constants.ConfigFileVersion + " \n");
         HashMap<String, Object> DefaultConfiguration = new HashMap<String, Object>() {
             private static final long serialVersionUID = 1L;
@@ -290,7 +297,7 @@ public class ClicClac extends JavaPlugin {
             getConfiguration().setProperty(e.getKey(), e.getValue());
         }
         // Create the file if it doesn't exist
-        getConfiguration().save();
+        getConfiguration().save();*/
     }
 
     
